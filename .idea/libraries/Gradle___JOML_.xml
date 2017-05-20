@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :JOML:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/JOML.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

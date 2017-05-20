@@ -1,0 +1,8 @@
+group 'Andrew Nelson'
+version '1.0'
+
+task run(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = 'com.game.Main'
+    systemProperty "java.library.path", "C:\\Users\\Andrew\\Documents\\Java\\LWJGL3\\native\\Windows\\64-Bit"
+}

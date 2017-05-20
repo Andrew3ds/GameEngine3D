@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dungeon.iml" filepath="$PROJECT_DIR$/.idea/modules/Dungeon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dungeon_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Dungeon_main.iml" group="Dungeon" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dungeon_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Dungeon_test.iml" group="Dungeon" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Engine/Engine.iml" filepath="$PROJECT_DIR$/.idea/modules/Engine/Engine.iml" group="Engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Engine/Engine_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Engine/Engine_main.iml" group="Engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Engine/Engine_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Engine/Engine_test.iml" group="Engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Game/Game.iml" filepath="$PROJECT_DIR$/.idea/modules/Game/Game.iml" group="Game" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Game/Game_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Game/Game_main.iml" group="Game" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Game/Game_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Game/Game_test.iml" group="Game" />
+    </modules>
+  </component>
+</project>

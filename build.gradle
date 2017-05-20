@@ -1,0 +1,46 @@
+group 'Andrew Nelson'
+version '1.0'
+
+apply plugin: 'java'
+
+
+allprojects {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    apply plugin: 'java'
+
+    repositories {
+        flatDir {
+            dirs '../Libs/'
+        }
+    }
+
+    dependencies {
+        compile name: 'Jemalloc'
+        compile name: 'GLFW'
+        compile name: 'GLWindow'
+        compile name: 'GSON'
+        compile name: 'JOML'
+        compile name: 'LWJGL'
+        compile name: 'OpenAL'
+        compile name: 'OpenGL'
+        compile name: 'STB'
+        compile name: 'ParShapes'
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/']
+            }
+        }
+    }
+}
+
+project(':Game') {
+    dependencies {
+        compile project(':Engine')
+    }
+}
+

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :Jemalloc:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/Jemalloc.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

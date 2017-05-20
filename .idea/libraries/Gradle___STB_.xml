@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :STB:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/STB.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

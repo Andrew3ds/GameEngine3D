@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :GLWindow:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/GLWindow.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

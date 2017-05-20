@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :ParShapes:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/ParShapes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

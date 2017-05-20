@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":Game:main" external.linked.project.path="$MODULE_DIR$/../../../Game" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="Andrew Nelson" external.system.module.type="sourceSet" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../../Game/build/classes/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../Game/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../Game/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../Game/src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: :Jemalloc:" level="project" />
+    <orderEntry type="library" name="Gradle: :GLFW:" level="project" />
+    <orderEntry type="library" name="Gradle: :GLWindow:" level="project" />
+    <orderEntry type="library" name="Gradle: :GSON:" level="project" />
+    <orderEntry type="library" name="Gradle: :JOML:" level="project" />
+    <orderEntry type="library" name="Gradle: :LWJGL:" level="project" />
+    <orderEntry type="library" name="Gradle: :OpenAL:" level="project" />
+    <orderEntry type="library" name="Gradle: :OpenGL:" level="project" />
+    <orderEntry type="library" name="Gradle: :STB:" level="project" />
+    <orderEntry type="library" name="Gradle: :ParShapes:" level="project" />
+    <orderEntry type="module" module-name="Engine_main" />
+  </component>
+</module>

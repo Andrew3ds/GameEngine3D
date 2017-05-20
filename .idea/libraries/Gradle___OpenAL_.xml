@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :OpenAL:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Libs/OpenAL.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
