@@ -33,8 +33,11 @@ public abstract class WorldObject extends Node {
             this.shaderProgram = this.shaderProgram.copyOf().compile();
             this.shaderProgram.matrix[ShaderProgram.PROJECTION].setData(renderer.getCamera().getProjection());
             this.shaderProgram.addUniform(new Uniform<>("color", new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat())));
-            this.shaderProgram.addUniform(new Uniform<>("lightColor", new Vector3f(1, 1, 1)));
-            this.shaderProgram.addUniform(new Uniform<>("lightPosition", new Vector3f(0, -5F, 0)));
+            this.shaderProgram.addUniform(new Uniform<>("pLight.color", new Vector3f(1, 1, 1)));
+            this.shaderProgram.addUniform(new Uniform<>("pLight.position", new Vector3f(0, -5F, 0)));
+            this.shaderProgram.addUniform(new Uniform<>("pLight.constant", 1.0F));
+            this.shaderProgram.addUniform(new Uniform<>("pLight.linear", 0.027F));
+            this.shaderProgram.addUniform(new Uniform<>("pLight.quadratic", 0.0028F));
             this.shaderProgram.addUniform(new Uniform<>("viewPosition", renderer.getCamera().getPosition()));
         }
     }

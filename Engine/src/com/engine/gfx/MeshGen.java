@@ -71,7 +71,7 @@ public class MeshGen {
                 12, 14, 15
         };
 
-        return new Mesh("cube #".concat(String.valueOf(numCubes++))).setVertices(vertices, indices);
+        return new Mesh("cube #".concat(String.valueOf(numCubes++))).setVertices(vertices, indices).generateNormals();
     }
 
     public static Mesh pyramid(float width, float height, float depth) {

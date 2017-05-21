@@ -105,6 +105,7 @@ public class DialogWindow {
             message = message.concat(stackTraceElement.toString()).concat("\n");
         }
         infoDialog("Error", message);
+        Engine.shutDown();
         e.printStackTrace();
     }
 

@@ -126,8 +126,30 @@ public class Main implements Application {
             }
         });
 
+        Mesh ico = MeshGen.cube(0.5F, 0.5F, 0.5F).finish();
         for(int i = 0; i < 500; i++) {
-            WorldObject wo = new WorldObject("rand" + i, MeshGen.pyramid(1,1,1).finish(),"default") {
+//            WorldObject wo = new WorldObject("rand" + i, MeshGen.pyramid(1,1,1).finish(),"default") {
+//                @Override
+//                public void onCreate() {
+//
+//                }
+//
+//                @Override
+//                public void onInput() {
+//
+//                }
+//
+//                @Override
+//                public void onUpdate() {
+//
+//                }
+//
+//                @Override
+//                public void onRender() {
+//
+//                }
+//            };
+            WorldObject wo = new WorldObject("rand" + i, ico,"default") {
                 @Override
                 public void onCreate() {
 

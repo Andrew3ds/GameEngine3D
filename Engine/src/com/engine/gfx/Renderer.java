@@ -118,7 +118,7 @@ public class Renderer {
     }
 
     public void registerShader(ShaderProgram shader) {
-        shaders.put(shader.getName(), shader);
+        shaders.put(shader.getName(), shader.compile());
     }
 
     public ShaderProgram getShader(String name) {
