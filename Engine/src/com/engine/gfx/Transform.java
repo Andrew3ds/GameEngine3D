@@ -11,6 +11,7 @@ public class Transform {
     private Vector3f rotation;
     private Vector3f scale;
     private Matrix4f matrix;
+    private Matrix4f normalMatrix;
 
     public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
         this.position = position;
@@ -18,6 +19,7 @@ public class Transform {
         this.scale = scale;
 
         matrix = new Matrix4f();
+        normalMatrix = new Matrix4f();
     }
 
     public Transform() {
@@ -56,7 +58,7 @@ public class Transform {
 
     public Matrix4f getMatrix() {
         if(rotation.x > 360) {
-
+            rotation.x = 0;
         }
 
         matrix.identity();
@@ -66,5 +68,15 @@ public class Transform {
         matrix.scale(scale);
 
         return matrix;
+    }
+
+    public Matrix4f getNormalMatrix() {
+        normalMatrix.identity();
+
+        normalMatrix.set(getMatrix());
+        normalMatrix.invert();
+        normalMatrix.transpose();
+
+        return normalMatrix;
     }
 }

@@ -108,7 +108,7 @@ public class MeshGen {
                 4, 11, 12
         };
 
-        return new Mesh("pyramid #".concat(String.valueOf(numPyra++))).setVertices(vertices, indices);
+        return new Mesh("pyramid #".concat(String.valueOf(numPyra++))).setVertices(vertices, indices).generateNormals();
     }
 
     public static Mesh icosahedron(float size) {
@@ -175,6 +175,6 @@ public class MeshGen {
         MemoryUtil.memFree(normals);
         MemoryUtil.memFree(triangles);
 
-        return new Mesh(name).setVertices(vertices, indices);
+        return new Mesh(name).setVertices(vertices, indices).generateNormals();
     }
 }

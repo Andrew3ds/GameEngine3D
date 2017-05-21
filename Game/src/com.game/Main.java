@@ -31,7 +31,7 @@ public class Main implements Application {
     public void Start() {
         Player player = new Player();
 
-        gl.ClearColor(1, 1, 1, 1);
+        gl.ClearColor(0.1F, 0.1F, 0.1F, 1F);
         input.centerMouse();
         input.addKeyEvent((key, eventType) -> {
             if(key == Key.ESCAPE && eventType == Key.EventType.Press) {
@@ -169,19 +169,9 @@ public class Main implements Application {
 
     }
 
-    long lastTime = Timer.getTime();
-
     @Override
     public void GameLoop() {
-        long currentTime = Timer.getTime();
 
-        if(currentTime - lastTime > 64) {
-            renderer.getScene().getNodes().forEach(node -> {
-                node.getTransform().getRotation().set(random.nextFloat() * 360F, random.nextFloat() * 360F, random.nextFloat() * 360F);
-            });
-
-            lastTime = currentTime;
-        }
     }
 
     @Override

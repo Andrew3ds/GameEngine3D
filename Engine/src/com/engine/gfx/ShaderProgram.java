@@ -17,8 +17,9 @@ import static com.engine.gfx.IGL.GL_TRUE;
  */
 public class ShaderProgram implements GLObject {
     public static final int TRANSFORM = 0;
-    public static final int WORLD = 1;
-    public static final int PROJECTION = 2;
+    public static final int NORMAL = 1;
+    public static final int WORLD = 2;
+    public static final int PROJECTION = 3;
 
     private int handle = -1;
     private String name;
@@ -27,6 +28,7 @@ public class ShaderProgram implements GLObject {
     private boolean compiled;
     public Uniform[] matrix = {
             new Uniform<>("matrix.transform", new Matrix4f()),
+            new Uniform<>("matrix.normal", new Matrix4f()),
             new Uniform<>("matrix.world", new Matrix4f()),
             new Uniform<>("matrix.projection", new Matrix4f())
     };
