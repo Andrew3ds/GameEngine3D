@@ -12,6 +12,7 @@ public class FirstPersonCamera extends Camera {
     private Vector3f position;
     private Vector3f rotation;
     private Vector3f vec;
+    private Vector3f direction;
     private Matrix4f transform;
     private Matrix4f projection;
     private Quaternionf quaternionf;
@@ -20,6 +21,7 @@ public class FirstPersonCamera extends Camera {
         this.position = position;
         this.rotation = rotation;
         this.vec = new Vector3f();
+        this.direction = new Vector3f();
         this.quaternionf = new Quaternionf();
 
         transform = new Matrix4f();
