@@ -78,6 +78,16 @@ public class ShaderProgram implements GLObject {
         return name;
     }
 
+    public ShaderProgram uniform(String name, Object data) {
+        if(uniformExists(name)) {
+            getUniform(name).setData(data);
+        } else {
+            addUniform(new Uniform<>(name, data));
+        }
+
+        return this;
+    }
+
     public ShaderProgram addUniform(Uniform uniform) {
         uniforms.put(uniform.getName(), uniform.getLocation(this));
 
@@ -86,6 +96,10 @@ public class ShaderProgram implements GLObject {
 
     public Uniform getUniform(String name) {
         return uniforms.get(name);
+    }
+
+    public boolean uniformExists(String name) {
+        return getUniform(name) != null;
     }
 
     public ShaderProgram copyOf() {

@@ -107,9 +107,6 @@ vec3 calcSpotLight(vec3 normal, SpotLight light) {
 
 void main() {
     textureColor = texture(sampler, tCoord_out);
-    if(textureColor.a < 0.1) {
-
-    }
 
     float ambientStrength = 0.1f;
     vec3 ambient = ambientStrength * ambientColor;
@@ -129,5 +126,5 @@ void main() {
     }
 
     vec3 lightResult = (ambient + totalLighting) * color;
-	fragColor = (textureColor * vec4(lightResult, 1));
+	fragColor = vec4(pow(textureColor.rgb * lightResult, vec3(1.0/2.2)), textureColor.a);
 }

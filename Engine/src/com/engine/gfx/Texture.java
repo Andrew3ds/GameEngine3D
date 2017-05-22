@@ -35,7 +35,7 @@ public class Texture implements GLObject {
         bind();
         switch(target) {
             case Texture2D: {
-                gl.TexImage2D(target.handle, 0, GL_RGBA8, this.width = width, this.height = height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.pixels = pixels);
+                gl.TexImage2D(target.handle, 0, GL_SRGB, this.width = width, this.height = height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.pixels = pixels);
             } break;
         }
         gl.GenerateMipmap(target.handle);

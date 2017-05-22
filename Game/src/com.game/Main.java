@@ -2,12 +2,10 @@ package com.game;
 
 import com.engine.core.Application;
 import com.engine.core.Engine;
-import com.engine.core.Timer;
 import com.engine.gfx.*;
 import com.engine.input.Key;
 import com.engine.io.Asset;
 import com.engine.io.Loader;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.Random;
@@ -54,10 +52,8 @@ public class Main implements Application {
                 new Shader(Shader.Type.Fragment, Loader.getFileAsString(new Asset("shader/white.fsh")))
         );
 
-        t = Loader.loadTexture(new Asset("texture/eye.png"));
+        t = Loader.loadTexture(new Asset("texture/man.jpg"));
 
-//        Mesh mesh = MeshGen.rock(2, 1, 1, 1).merge(MeshGen.sphere(8, 8, 1)).finish();
-//        Mesh mesh = MeshGen.icosahedron(2F).finish();
         Mesh mesh = MeshGen.pyramid(1, 1, 1).finish();
 
         display.getGlfwWindow().toggleCursor();
@@ -127,7 +123,7 @@ public class Main implements Application {
         });
 
         Mesh ico = MeshGen.cube(0.5F, 0.5F, 0.5F).finish();
-        for(int i = 0; i < 500; i++) {
+        for(int i = 0; i < 50; i++) {
 //            WorldObject wo = new WorldObject("rand" + i, MeshGen.pyramid(1,1,1).finish(),"default") {
 //                @Override
 //                public void onCreate() {
@@ -179,6 +175,8 @@ public class Main implements Application {
             wo.getTransform().getRotation().z = random.nextFloat() * 360F;
             renderer.addSceneElement(wo);
         }
+
+        renderer.getScene().addLight(new PointLight(new Vector3f(1), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
     }
 
     @Override
