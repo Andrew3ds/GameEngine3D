@@ -65,7 +65,7 @@ vec3 calcPointLight(vec3 normal, PointLight light) {
     vec3 lightDir = normalize(light.position - fragPosition);
 
     vec3 diffuse = calcDiffuse(normal, lightDir, light.color);
-    vec3 specular = calcSpecular(normal, 5f, lightDir, light.color);
+    vec3 specular = calcSpecular(normal, 0.5f, lightDir, light.color);
 
     float distance = length(light.position - fragPosition);
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
@@ -80,7 +80,7 @@ vec3 calcDirLight(vec3 normal, DirLight light) {
     vec3 lightDir = normalize(-light.direction);
 
     vec3 diffuse = calcDiffuse(normal, lightDir, light.color);
-    vec3 specular = calcSpecular(normal, 5f, lightDir, light.color);
+    vec3 specular = calcSpecular(normal, 0.5f, lightDir, light.color);
 
     return (diffuse + specular);
 }
@@ -88,16 +88,15 @@ vec3 calcDirLight(vec3 normal, DirLight light) {
 vec3 calcSpotLight(vec3 normal, SpotLight light) {
     vec3 lightDir = normalize(light.position - fragPosition);
     float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutoff - light.outerCutoff;
+    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
 
-    if(theta > light.cutoff) {
-        float diffuseIntensity = max(dot(normal, lightDir), 0.0);
-        vec3 diffuse = diffuseIntensity * light.color;
+    if(theta > light.outerCutoff) {
+        vec3 diffuse = calcDiffuse(normal, lightDir, light.color);
+        vec3 specular = calcSpecular(normal, 0.5f, lightDir, light.color);
 
-        float specularStrength = 0.5f;
-        vec3 viewDir = normalize(viewPosition - fragPosition);
-        vec3 reflectDir = reflect(-lightDir, normal);
-        float specularIntensity = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-        vec3 specular = specularStrength * specularIntensity * light.color;
+        diffuse *= intensity;
+        specular *= intensity;
 
         return (diffuse + specular);
     } else {
@@ -107,8 +106,9 @@ vec3 calcSpotLight(vec3 normal, SpotLight light) {
 
 void main() {
     textureColor = texture(sampler, tCoord_out);
+    textureColor = vec4(pow(textureColor.rgb, vec3(1.0/2.2)), textureColor.a);
 
-    float ambientStrength = 0.1f;
+    float ambientStrength = 0.25f;
     vec3 ambient = ambientStrength * ambientColor;
 
     vec3 normal = normalize(normal_out);
@@ -126,5 +126,5 @@ void main() {
     }
 
     vec3 lightResult = (ambient + totalLighting) * color;
-	fragColor = vec4(pow(textureColor.rgb * lightResult, vec3(1.0/2.2)), textureColor.a);
+	fragColor = textureColor * vec4(lightResult, 1);
 }

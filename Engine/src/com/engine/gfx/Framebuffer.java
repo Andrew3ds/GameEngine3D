@@ -51,13 +51,13 @@ public class Framebuffer implements GLObject {
         unbind();
     }
 
-    public void texture2D(Texture texture) {
+    public void texture2D(Texture texture, Attachment attachment) {
         bind();
-        gl.FramebufferTexture2D(target.handle, GL_COLOR_ATTACHMENT0, texture.getTarget().handle, texture.getHandle(), 0);
+        gl.FramebufferTexture2D(target.handle, attachment.handle, texture.getTarget().handle, texture.getHandle(), 0);
         unbind();
     }
 
-    public boolean complete() {
+    public boolean isComplete() {
         bind();
         boolean status = gl.CheckFramebufferStatus(target.handle) == GL_FRAMEBUFFER_COMPLETE;
         unbind();

@@ -13,6 +13,7 @@ public abstract class Camera {
 
     public abstract Vector3f getPosition();
     public abstract Vector3f getRotation();
+    public abstract Vector3f getDirection();
     public abstract Matrix4f getWorldMatrix();
     public abstract Camera createProjection();
     public abstract Matrix4f getProjection();

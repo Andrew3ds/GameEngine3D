@@ -56,6 +56,32 @@ public class Transform {
         return this;
     }
 
+    public Transform rotateX(float amount) {
+        rotation.x += amount;
+
+        return this;
+    }
+
+    public Transform rotateY(float amount) {
+        rotation.y += amount;
+
+        return this;
+    }
+
+    public Transform rotateZ(float amount) {
+        rotation.z += amount;
+
+        return this;
+    }
+
+    public Transform rotate(float x, float y, float z) {
+        return rotateX(x).rotateY(y).rotateZ(z);
+    }
+
+    public Transform rotate(Vector3f amount) {
+        return rotate(amount.x, amount.y, amount.z);
+    }
+
     public Matrix4f getMatrix() {
         if(rotation.x > 360) {
             rotation.x = 0;
@@ -74,8 +100,7 @@ public class Transform {
         normalMatrix.identity();
 
         normalMatrix.set(getMatrix());
-        normalMatrix.invert();
-        normalMatrix.transpose();
+        normalMatrix.invert().transpose();
 
         return normalMatrix;
     }

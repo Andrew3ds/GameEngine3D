@@ -12,7 +12,7 @@ import static com.engine.gfx.IGL.*;
  */
 public class Texture implements GLObject {
     public enum Target {
-        Texture2D(GL_TEXTURE_2D);
+        Texture2D(GL_TEXTURE_2D), DepthTexture(GL_TEXTURE_2D);
 
         final int handle;
 
@@ -29,13 +29,17 @@ public class Texture implements GLObject {
     private ByteBuffer pixels;
     private TextureParameter parameter;
 
-    public Texture(int width, int height, ByteBuffer pixels, TextureParameter parameter) {
+    public Texture(int width, int height, Target target, ByteBuffer pixels, TextureParameter parameter) {
         handle = gl.GenTextures();
 
+        this.target = target;
         bind();
         switch(target) {
             case Texture2D: {
-                gl.TexImage2D(target.handle, 0, GL_SRGB, this.width = width, this.height = height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.pixels = pixels);
+                gl.TexImage2D(target.handle, 0, GL_SRGB_ALPHA, this.width = width, this.height = height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.pixels = pixels);
+            } break;
+            case DepthTexture: {
+                gl.TexImage2D(target.handle, 0, GL_DEPTH_COMPONENT, this.width = width, this.height = height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, this.pixels = pixels);
             } break;
         }
         gl.GenerateMipmap(target.handle);
@@ -47,11 +51,6 @@ public class Texture implements GLObject {
 
     public Target getTarget() {
         return target;
-    }
-
-    public Texture setTarget(Target target) {
-        this.target = target;
-        return this;
     }
 
     public int getWidth() {

@@ -50,7 +50,7 @@ public class Loader {
         } catch (IOException e) {
             DialogWindow.errorDialog(e);
 
-            return new Texture(0, 0, null, TextureParameter.defaultInstance);
+            return new Texture(0, 0, Texture.Target.Texture2D, null, TextureParameter.defaultInstance);
         }
 
         IntBuffer w = MemoryUtil.memAllocInt(1);
@@ -64,12 +64,12 @@ public class Loader {
             } catch (IOException e) {
                 DialogWindow.errorDialog(e);
 
-                return new Texture(0, 0, null, TextureParameter.defaultInstance);
+                return new Texture(0, 0, Texture.Target.Texture2D, null, TextureParameter.defaultInstance);
             }
         }
 
         MemoryUtil.memFree(buffer);
 
-        return new Texture(w.get(), h.get(), pixels, TextureParameter.defaultInstance);
+        return new Texture(w.get(), h.get(), Texture.Target.Texture2D, pixels, TextureParameter.defaultInstance);
     }
 }

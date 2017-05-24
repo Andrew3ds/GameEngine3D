@@ -1,6 +1,7 @@
 package com.engine.gfx;
 
 import com.engine.core.Engine;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -18,7 +19,9 @@ public class Renderer {
     private Scene scene;
     private Map<String, ShaderProgram> shaders;
     private RenderSurface renderSurface;
+    private DepthSurface depthSurface;
     private Camera camera;
+    private Matrix4f lookAtCam;
     private VertexArray quad;
     private String textureFsh = "" +
             "#version 330 core\n" +
@@ -41,6 +44,7 @@ public class Renderer {
     public Renderer() {
         scene = new Scene();
         shaders = new HashMap<>();
+        lookAtCam = new Matrix4f();
 
         Vertex[] vertices = {
                 new Vertex(new Vector3f(-1,  1, 0), new Vector2f(0, 1)),
@@ -54,7 +58,8 @@ public class Renderer {
         };
         quad = new VertexArray().bufferData(vertices, indices);
         registerShader(new ShaderProgram("texture", new Shader(Shader.Type.Vertex, textureVsh), new Shader(Shader.Type.Fragment, textureFsh)).compile());
-        renderSurface = new RenderSurface(display.getWidth(), display.getHeight(), 16);
+        renderSurface = new RenderSurface(display.getWidth(), display.getHeight(), 0);
+        depthSurface = new DepthSurface(1024, 1024);
     }
 
     public void clearScreen(boolean color, boolean depth, boolean stencil) {
@@ -71,7 +76,6 @@ public class Renderer {
         clearScreen(true, true, false);
 
         renderSurface.beginRender();
-        clearScreen(true, true, false);
         scene.render();
         Engine.app.Render();
         renderSurface.endRender();
@@ -150,6 +154,7 @@ public class Renderer {
         Texture.clearTextures();
         shaders.forEach((s, shaderProgram) -> shaderProgram.dispose());
         renderSurface.dispose();
+        depthSurface.dispose();
         quad.dispose();
     }
 

@@ -3,6 +3,9 @@ package com.engine.gfx;
 import com.engine.core.Disposable;
 import com.engine.misc.DialogWindow;
 
+import static com.engine.core.Engine.gl;
+import static com.engine.core.Engine.renderer;
+
 /**
  * Created by Andrew on 1/11/2017.
  */
@@ -44,7 +47,7 @@ public class RenderSurface implements Disposable {
         rboDepth.multisampledStorage(samples, Renderbuffer.Format.Depth24Stencil8);
         multisampledFBO.applyRenderbuffer(rboColor, Framebuffer.Attachment.Color0);
         multisampledFBO.applyRenderbuffer(rboDepth, Framebuffer.Attachment.Depth);
-        if(!multisampledFBO.complete()) {
+        if(!multisampledFBO.isComplete()) {
             try {
                 throw new GLException("Framebuffer incomplete");
             } catch (GLException e) {
@@ -53,9 +56,9 @@ public class RenderSurface implements Disposable {
         }
 
         fbo = new Framebuffer(width, height);
-        texture = new Texture(width, height, null, TextureParameter.defaultInstance);
-        fbo.texture2D(texture);
-        if(!fbo.complete()) {
+        texture = new Texture(width, height, Texture.Target.Texture2D, null, TextureParameter.defaultInstance);
+        fbo.texture2D(texture, Framebuffer.Attachment.Color0);
+        if(!fbo.isComplete()) {
             try {
                 throw new GLException("Framebuffer incomplete");
             } catch (GLException e) {
@@ -69,7 +72,9 @@ public class RenderSurface implements Disposable {
     }
 
     public void beginRender() {
+        gl.Viewport(0, 0, width, height);
         multisampledFBO.bind();
+        renderer.clearScreen(true, true, false);
     }
 
     public void endRender() {

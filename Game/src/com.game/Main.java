@@ -2,6 +2,7 @@ package com.game;
 
 import com.engine.core.Application;
 import com.engine.core.Engine;
+import com.engine.core.Timer;
 import com.engine.gfx.*;
 import com.engine.input.Key;
 import com.engine.io.Asset;
@@ -16,9 +17,10 @@ import static com.engine.core.Engine.*;
  * Created by Andrew on 12/27/2016.
  */
 public class Main implements Application {
-    Texture t;
+    Texture texture;
     WorldObject wo;
     Random random = new Random();
+    Player player;
 
     public static void main(String[] args) {
         init();
@@ -27,7 +29,7 @@ public class Main implements Application {
 
     @Override
     public void Start() {
-        Player player = new Player();
+        player = new Player();
 
         gl.ClearColor(0.1F, 0.1F, 0.1F, 1F);
         input.centerMouse();
@@ -48,16 +50,16 @@ public class Main implements Application {
         renderer.camera(player.getCamera());
 
         ShaderProgram defaultShader = new ShaderProgram("default",
-                new Shader(Shader.Type.Vertex, Loader.getFileAsString(new Asset("shader/white.vsh"))),
-                new Shader(Shader.Type.Fragment, Loader.getFileAsString(new Asset("shader/white.fsh")))
+                new Shader(Shader.Type.Vertex, ShaderProgram.BuiltIn.defaultV),
+                new Shader(Shader.Type.Fragment, ShaderProgram.BuiltIn.defaultF)
         );
+        renderer.registerShader(defaultShader);
 
-        t = Loader.loadTexture(new Asset("texture/man.jpg"));
+        texture = Loader.loadTexture(new Asset("texture/man.jpg"));
 
         Mesh mesh = MeshGen.pyramid(1, 1, 1).finish();
 
         display.getGlfwWindow().toggleCursor();
-        renderer.registerShader(defaultShader);
         renderer.addSceneElement(wo = new WorldObject("cube", MeshGen.cubeTextured(1,1,1).finish(), "default") {
             @Override
             public void onCreate() {
@@ -71,12 +73,12 @@ public class Main implements Application {
 
             @Override
             public void onUpdate() {
-
+                getTransform().rotateY(1f);
             }
 
             @Override
             public void onRender() {
-                t.bind();
+                texture.bind();
             }
         });
         renderer.addSceneElement(new WorldObject("sphere", MeshGen.sphere(32,32,1).finish(), "default") {
@@ -113,7 +115,7 @@ public class Main implements Application {
 
             @Override
             public void onUpdate() {
-//                getTransform().getRotation().y += (0.3F/16F) * Timer.getDelta();
+
             }
 
             @Override
@@ -123,7 +125,7 @@ public class Main implements Application {
         });
 
         Mesh ico = MeshGen.cube(0.5F, 0.5F, 0.5F).finish();
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 500; i++) {
 //            WorldObject wo = new WorldObject("rand" + i, MeshGen.pyramid(1,1,1).finish(),"default") {
 //                @Override
 //                public void onCreate() {
@@ -176,7 +178,17 @@ public class Main implements Application {
             renderer.addSceneElement(wo);
         }
 
-        renderer.getScene().addLight(new PointLight(new Vector3f(1), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
+        renderer.getScene().addLight("point", new PointLight(new Vector3f(0, 0.5f, 1f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
+        renderer.getScene().addLight("point2", new PointLight(new Vector3f(1f, 0.5f, 0f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
+        renderer.getScene().addLight("spot", new SpotLight(new Vector3f(1), player.getCamera().getPosition(), player.getCamera().getDirection(), 12.5F, 17.5F));
+
+        for(int i = 0; i < 5; i++) {
+            renderer.getScene().addLight("point" + i, new PointLight(
+                new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat()),
+                new Vector3f(random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F), random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F), random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F)),
+                1.0F, 0.007F, 0.0002F)
+            );
+        }
     }
 
     @Override
@@ -189,9 +201,18 @@ public class Main implements Application {
 
     }
 
+    float x, y, r = 5f, _t;
+
     @Override
     public void GameLoop() {
+        _t += 5f;
 
+        x = (float) Math.cos(Math.toRadians(_t)) * r;
+        y = (float) Math.sin(Math.toRadians(_t)) * r;
+
+        renderer.getScene().getSpotLights().get("spot").setPosition(player.getCamera().getPosition());
+        renderer.getScene().getSpotLights().get("spot").setDirection(player.getCamera().getDirection());
+        renderer.getScene().getPointLights().get("point2").setPosition(new Vector3f(x, 0, y));
     }
 
     @Override

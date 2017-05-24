@@ -8,33 +8,33 @@ import java.util.function.BiConsumer;
  */
 public class Scene {
     private Map<String, Node> nodes;
-    private List<PointLight> pointLights;
-    private List<DirectionalLight> dirLights;
-    private List<SpotLight> spotLights;
+    private Map<String, PointLight> pointLights;
+    private Map<String, DirectionalLight> dirLights;
+    private Map<String, SpotLight> spotLights;
 
-    public Scene(Map<String, Node> nodes, List<LightSource> lights) {
+    public Scene(Map<String, Node> nodes, Map<String, LightSource> lights) {
         this.nodes = nodes;
-        this.pointLights = new ArrayList<>();
-        this.dirLights = new ArrayList<>();
-        this.spotLights = new ArrayList<>();
+        this.pointLights = new HashMap<>();
+        this.dirLights = new HashMap<>();
+        this.spotLights = new HashMap<>();
 
-        lights.forEach(lightSource -> {
+        lights.forEach((s, lightSource) -> {
             switch(lightSource.getType()) {
                 case Point: {
-                    pointLights.add((PointLight)lightSource);
+                    pointLights.put(s, (PointLight)lightSource);
                 } break;
                 case Directional: {
-                    dirLights.add((DirectionalLight)lightSource);
+                    dirLights.put(s, (DirectionalLight)lightSource);
                 } break;
                 case Spot: {
-                    spotLights.add((SpotLight)lightSource);
+                    spotLights.put(s, (SpotLight)lightSource);
                 } break;
             }
         });
     }
 
     public Scene() {
-        this(new TreeMap<>(), new ArrayList<>());
+        this(new TreeMap<>(), new TreeMap<>());
     }
 
     public void addNode(Node node) {
@@ -58,29 +58,29 @@ public class Scene {
         return nodes.values();
     }
 
-    public void addLight(LightSource lightSource) {
+    public void addLight(String name, LightSource lightSource) {
         switch(lightSource.getType()) {
             case Point: {
-                pointLights.add((PointLight)lightSource);
+                pointLights.put(name, (PointLight)lightSource);
             } break;
             case Directional: {
-                dirLights.add((DirectionalLight)lightSource);
+                dirLights.put(name, (DirectionalLight)lightSource);
             } break;
             case Spot: {
-                spotLights.add((SpotLight)lightSource);
+                spotLights.put(name, (SpotLight)lightSource);
             } break;
         }
     }
 
-    public List<PointLight> getPointLights() {
+    public Map<String, PointLight> getPointLights() {
         return pointLights;
     }
 
-    public List<DirectionalLight> getDirLights() {
+    public Map<String, DirectionalLight> getDirLights() {
         return dirLights;
     }
 
-    public List<SpotLight> getSpotLights() {
+    public Map<String, SpotLight> getSpotLights() {
         return spotLights;
     }
 

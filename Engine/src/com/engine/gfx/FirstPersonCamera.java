@@ -13,6 +13,7 @@ public class FirstPersonCamera extends Camera {
     private Vector3f rotation;
     private Vector3f vec;
     private Vector3f direction;
+    private Vector3f cameraTarget;
     private Matrix4f transform;
     private Matrix4f projection;
     private Quaternionf quaternionf;
@@ -22,6 +23,7 @@ public class FirstPersonCamera extends Camera {
         this.rotation = rotation;
         this.vec = new Vector3f();
         this.direction = new Vector3f();
+        this.cameraTarget = new Vector3f().zero();
         this.quaternionf = new Quaternionf();
 
         transform = new Matrix4f();
@@ -57,6 +59,11 @@ public class FirstPersonCamera extends Camera {
     }
 
     @Override
+    public Vector3f getDirection() {
+        return direction;
+    }
+
+    @Override
     public Matrix4f getWorldMatrix() {
         update();
 
@@ -66,6 +73,8 @@ public class FirstPersonCamera extends Camera {
         transform.identity();
         transform.rotate(quaternionf);
         transform.translate(vec.set(position).negate());
+
+        direction = transform.positiveZ(direction).negate().normalize();
 
         return transform;
     }
