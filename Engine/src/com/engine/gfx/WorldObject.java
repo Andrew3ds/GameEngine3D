@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static com.engine.core.Engine.gl;
 import static com.engine.core.Engine.renderer;
 
 /**
@@ -14,13 +15,16 @@ import static com.engine.core.Engine.renderer;
  */
 public abstract class WorldObject extends Node {
     private Mesh mesh;
+    private Material material;
     private ShaderProgram shaderProgram;
+    private ShaderProgram depthShader;
     private Uniform<Vector3f> viewPosition;
 
-    public WorldObject(String name, Mesh mesh, String shaderName) {
+    public WorldObject(String name, Mesh mesh, Material material, String shaderName) {
         super(name);
 
         this.mesh = mesh;
+        this.material = material;
         this.shaderProgram = renderer.getShader(shaderName);
         if(this.shaderProgram == null) {
             DialogWindow.errorDialog(new IllegalArgumentException("Non-existent shader given for \"".concat(name).concat("\"")));
@@ -33,13 +37,15 @@ public abstract class WorldObject extends Node {
 
         if(renderer.getCamera() != null) {
             this.shaderProgram = this.shaderProgram.copyOf().compile();
+            this.depthShader = renderer.getShader("depth").copyOf().compile();
 
             this.shaderProgram.matrix[ShaderProgram.PROJECTION].setData(renderer.getCamera().getProjection());
 
-            this.shaderProgram.uniform("color", new Vector3f(1f));
-//            this.shaderProgram.uniform("color", new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat()));
+            this.getShaderProgram().uniform("material.tex1", 0);
+            this.shaderProgram.uniform("material.color", material.getColor());
+
+            this.getShaderProgram().uniform("shadowMap", 1);
             this.shaderProgram.uniform("ambientColor", new Vector3f(1F));
-            this.shaderProgram.uniform("numPointLights", 0);
 
             this.shaderProgram.addUniform(viewPosition = new Uniform<>("viewPosition", renderer.getCamera().getPosition()));
         }
@@ -47,6 +53,10 @@ public abstract class WorldObject extends Node {
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
     public ShaderProgram getShaderProgram() {
@@ -57,6 +67,24 @@ public abstract class WorldObject extends Node {
     public void render() {
         super.render();
 
+        switch(renderer.getMode()) {
+            case Default: {
+                renderDefault();
+            } break;
+            case Depth: {
+                renderDepth();
+            } break;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        depthShader.dispose();
+        shaderProgram.dispose();
+        shaderProgram = null;
+    }
+
+    private void renderDefault() {
         Map<String, PointLight> pointLights = renderer.getScene().getPointLights();
         Map<String, DirectionalLight> dirLights = renderer.getScene().getDirLights();
         Map<String, SpotLight> spotLights = renderer.getScene().getSpotLights();
@@ -72,6 +100,7 @@ public abstract class WorldObject extends Node {
         getShaderProgram().matrix[ShaderProgram.TRANSFORM].setData(getTransform().getMatrix());
         getShaderProgram().matrix[ShaderProgram.NORMAL].setData(getTransform().getNormalMatrix());
         getShaderProgram().matrix[ShaderProgram.WORLD].setData(renderer.getCamera().getWorldMatrix());
+        getShaderProgram().uniform("lightSpaceMatrix", renderer.getLightSpaceMatrix());
 
         int i = 0;
         for(PointLight pointLight : pointLights.values()) {
@@ -86,15 +115,26 @@ public abstract class WorldObject extends Node {
             loadSpotLight(spotLight, i++);
         }
 
+        material.getTexture().slot(0).bind();
+        renderer.getShadowMap().slot(1).bind();
+
         getShaderProgram().bind();
         getMesh().render();
         getShaderProgram().unbind();
+
+        renderer.getShadowMap().slot(1).unbind();
+        material.getTexture().slot(0).unbind();
     }
 
-    @Override
-    public void onDestroy() {
-        shaderProgram.dispose();
-        shaderProgram = null;
+    private void renderDepth() {
+        depthShader.matrix[ShaderProgram.TRANSFORM].setData(getTransform().getMatrix());
+        depthShader.uniform("lightSpaceMatrix", renderer.getLightSpaceMatrix());
+
+        renderer.cullFace(Renderer.Face.Front);
+        depthShader.bind();
+        getMesh().render();
+        depthShader.unbind();
+        renderer.cullFace(Renderer.Face.Back);
     }
 
     private void loadPointLight(PointLight light, int id) {

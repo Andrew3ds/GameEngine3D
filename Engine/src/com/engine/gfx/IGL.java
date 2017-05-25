@@ -561,6 +561,7 @@ public interface IGL {
     void TexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels);
     void TexParameteri(int target, int pname, int param);
     void TexParameterf(int target, int pname, float param);
+    void TexParameterfv(int target, int pname, float[] params);
     void DeleteTextures(int texture);
     void BlendFunc(int sfactor, int dfactor);
     void DepthFunc(int func);

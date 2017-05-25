@@ -49,6 +49,10 @@ public class GL implements IGL {
         GL11.glTexParameterf(target, pname, param);
     }
 
+    public void TexParameterfv(int target, int pname, float[] params) {
+        GL11.glTexParameterfv(target, pname, params);
+    }
+
     public void DeleteTextures(int texture) {
         GL11.glDeleteTextures(texture);
     }

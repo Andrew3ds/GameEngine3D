@@ -16,21 +16,30 @@ import static com.engine.gfx.IGL.*;
  * Created by Andrew on 1/4/2017.
  */
 public class Renderer {
+    public enum Mode {
+        Default, Depth;
+    }
+
+    public enum Face {
+        Front(GL_FRONT), Back(GL_BACK);
+
+        int handle;
+
+        Face(int handle) {
+            this.handle = handle;
+        }
+    }
+
     private Scene scene;
     private Map<String, ShaderProgram> shaders;
+    private Mode mode;
     private RenderSurface renderSurface;
     private DepthSurface depthSurface;
     private Camera camera;
-    private Matrix4f lookAtCam;
+    private Matrix4f lightView;
+    private Matrix4f lightProjection;
+    private Matrix4f lightSpaceMatrix;
     private VertexArray quad;
-    private String textureFsh = "" +
-            "#version 330 core\n" +
-            "in vec2 tCoord_out;\n" +
-            "out vec4 color;\n" +
-            "uniform sampler2D sampler;\n" +
-            "void main() {\n" +
-            "   color = texture(sampler, tCoord_out);\n" +
-            "}";
     private String textureVsh = "" +
             "#version 330 core\n" +
             "layout(location = 0) in vec3 position;\n" +
@@ -40,11 +49,40 @@ public class Renderer {
             "   tCoord_out = tCoord;\n" +
             "   gl_Position = vec4(position, 1);\n" +
             "}";
+    private String textureFsh = "" +
+            "#version 330 core\n" +
+            "in vec2 tCoord_out;\n" +
+            "out vec4 color;\n" +
+            "uniform sampler2D sampler;\n" +
+            "void main() {\n" +
+            "   color = texture(sampler, tCoord_out);\n" +
+            "}";
+    private String depthVsh = "" +
+            "#version 330 core\n" +
+            "\n" +
+            "layout(location = 0) in vec3 position;\n" +
+            "\n" +
+            "uniform struct Matrix {\n" +
+            "\tmat4 transform;\n" +
+            "} matrix;\n" +
+            "\n" +
+            "uniform mat4 lightSpaceMatrix;\n" +
+            "\n" +
+            "void main() {\n" +
+            "\tgl_Position = lightSpaceMatrix * matrix.transform * vec4(position, 1.0f);\n" +
+            "}";
+    private String depthFsh = "" +
+            "#version 330 core \n" +
+            "\n" +
+            "void main() {}";
 
     public Renderer() {
         scene = new Scene();
         shaders = new HashMap<>();
-        lookAtCam = new Matrix4f();
+        mode = Mode.Default;
+        lightProjection = new Matrix4f().ortho(-10F, 10F, -10F, 10F, 1.0F, 500F);
+        lightView = new Matrix4f().lookAt(new Vector3f(-2.0f, 4.0f, -1.0f), new Vector3f(0F, 0F, 0F), new Vector3f(0F, 1F, 0F));
+        lightSpaceMatrix = new Matrix4f().set(lightProjection).mul(lightView);
 
         Vertex[] vertices = {
                 new Vertex(new Vector3f(-1,  1, 0), new Vector2f(0, 1)),
@@ -58,6 +96,7 @@ public class Renderer {
         };
         quad = new VertexArray().bufferData(vertices, indices);
         registerShader(new ShaderProgram("texture", new Shader(Shader.Type.Vertex, textureVsh), new Shader(Shader.Type.Fragment, textureFsh)).compile());
+        registerShader(new ShaderProgram("depth", new Shader(Shader.Type.Vertex, depthVsh), new Shader(Shader.Type.Fragment, depthFsh)));
         renderSurface = new RenderSurface(display.getWidth(), display.getHeight(), 0);
         depthSurface = new DepthSurface(1024, 1024);
     }
@@ -75,13 +114,12 @@ public class Renderer {
     public void renderScene() {
         clearScreen(true, true, false);
 
-        renderSurface.beginRender();
-        scene.render();
-        Engine.app.Render();
-        renderSurface.endRender();
+        renderToFramebuffer(depthSurface, Mode.Depth);
+        renderToFramebuffer(renderSurface, Mode.Default);
 
         getShader("texture").bind();
         renderSurface.getTexture().bind();
+//        depthSurface.getTexture().bind();
         quad.bind();
         gl.DrawElements(GL_TRIANGLES, quad.getSize(), GL_UNSIGNED_INT, 0L);
         quad.unbind();
@@ -99,6 +137,10 @@ public class Renderer {
                 object.getShaderProgram().matrix[ShaderProgram.PROJECTION].setData(camera.getProjection());
             }
         });
+    }
+
+    public void cullFace(Face face) {
+        gl.CullFace(face.handle);
     }
 
     public void enableDepthTest(boolean value) {
@@ -125,10 +167,6 @@ public class Renderer {
         shaders.put(shader.getName(), shader.compile());
     }
 
-    public ShaderProgram getShader(String name) {
-        return shaders.get(name);
-    }
-
     public void resize(int w, int h) {
         gl.Viewport(0, 0, w, h);
         renderSurface.resize(w, h);
@@ -144,8 +182,24 @@ public class Renderer {
         });
     }
 
+    public ShaderProgram getShader(String name) {
+        return shaders.get(name);
+    }
+
     public Camera getCamera() {
         return camera;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public Matrix4f getLightSpaceMatrix() {
+        return lightSpaceMatrix;
+    }
+
+    public Texture getShadowMap() {
+        return depthSurface.getTexture();
     }
 
     public void cleanUp() {
@@ -156,6 +210,14 @@ public class Renderer {
         renderSurface.dispose();
         depthSurface.dispose();
         quad.dispose();
+    }
+
+    private void renderToFramebuffer(IRenderTarget target, Mode mode) {
+        this.mode = mode;
+        target.beginRender();
+        scene.render();
+        Engine.app.Render();
+        target.endRender();
     }
 
     private void enableGL(int target, boolean value) {

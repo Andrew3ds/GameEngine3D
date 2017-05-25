@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL11.glReadBuffer;
 /**
  * Created by Andrew on 5/22/2017.
  */
-public class DepthSurface implements Disposable {
+public class DepthSurface implements IRenderTarget, Disposable {
     private int width;
     private int height;
     private Framebuffer depthComponent;
@@ -32,7 +32,7 @@ public class DepthSurface implements Disposable {
 
         depthComponent = new Framebuffer(width, height);
         texture = new Texture(width, height, Texture.Target.DepthTexture, null,
-                new TextureParameter(TextureParameter.Filter.Nearest, TextureParameter.Edge.Repeat, 0));
+                new TextureParameter(TextureParameter.Filter.Nearest, TextureParameter.Edge.Clamp, 16));
         depthComponent.texture2D(texture, Framebuffer.Attachment.Depth);
         depthComponent.bind();
         glDrawBuffer(GL_NONE);
@@ -52,12 +52,14 @@ public class DepthSurface implements Disposable {
         return texture;
     }
 
+    @Override
     public void beginRender() {
         gl.Viewport(0, 0, width, height);
         depthComponent.bind();
         renderer.clearScreen(false, true, false);
     }
 
+    @Override
     public void endRender() {
         depthComponent.unbind();
     }

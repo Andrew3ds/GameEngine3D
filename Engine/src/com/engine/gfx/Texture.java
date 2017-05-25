@@ -61,6 +61,12 @@ public class Texture implements GLObject {
         return height;
     }
 
+    public Texture slot(int i) {
+        gl.ActiveTexture(GL_TEXTURE0 + i);
+
+        return this;
+    }
+
     public static void clearTextures() {
         textures.forEach(Texture::dispose);
     }

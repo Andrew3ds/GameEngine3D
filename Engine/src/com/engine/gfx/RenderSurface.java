@@ -9,7 +9,7 @@ import static com.engine.core.Engine.renderer;
 /**
  * Created by Andrew on 1/11/2017.
  */
-public class RenderSurface implements Disposable {
+public class RenderSurface implements IRenderTarget, Disposable {
     private int width;
     private int height;
     private int samples;
@@ -71,12 +71,14 @@ public class RenderSurface implements Disposable {
         return texture;
     }
 
+    @Override
     public void beginRender() {
         gl.Viewport(0, 0, width, height);
         multisampledFBO.bind();
         renderer.clearScreen(true, true, false);
     }
 
+    @Override
     public void endRender() {
         multisampledFBO.unbind();
         multisampledFBO.blitTo(fbo);

@@ -22,7 +22,7 @@ public class TextureParameter {
     }
 
     public enum Edge {
-        Repeat(GL_REPEAT), MirroredRepeat(GL_MIRRORED_REPEAT);
+        Repeat(GL_REPEAT), Clamp(GL_CLAMP_TO_BORDER), MirroredRepeat(GL_MIRRORED_REPEAT);
 
         final int handle;
 
@@ -46,6 +46,9 @@ public class TextureParameter {
     public void apply(Texture.Target target) {
         gl.TexParameteri(target.handle, GL_TEXTURE_MIN_FILTER, filter.min);
         gl.TexParameteri(target.handle, GL_TEXTURE_MAG_FILTER, filter.mag);
+        gl.TexParameterf(target.handle, GL_TEXTURE_WRAP_S, edge.handle);
+        gl.TexParameterf(target.handle, GL_TEXTURE_WRAP_T, edge.handle);
+        gl.TexParameterfv(target.handle, GL_TEXTURE_BORDER_COLOR, new float[]{ 1.0F, 1.0F, 1.0F, 1.0F });
 
         if(gl.supportsAniso()) {
             float maxAniso = gl.GetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: lib/GLFW.jar lib/GLWindow.jar lib/GSON.jar lib/Jeemalloc.j
+ ar lib/JOML.jar lib/LWJGL.jar lib/OpenAL.jar lib/OpenGL.jar lib/ParSh
+ apes.jar lib/STB.jar
+Main-Class: com.game.Main
+

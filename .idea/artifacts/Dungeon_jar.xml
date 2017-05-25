@@ -6,6 +6,9 @@
         <element id="module-output" name="Dungeon_main" />
         <element id="module-output" name="Engine_main" />
         <element id="module-output" name="Game_main" />
+        <element id="directory" name="META-INF">
+          <element id="dir-copy" path="$PROJECT_DIR$/Engine/src/META-INF" />
+        </element>
       </element>
       <element id="library" level="project" name="Gradle: :ParShapes:" />
       <element id="library" level="project" name="Gradle: :OpenGL:" />
@@ -17,8 +20,8 @@
       <element id="library" level="project" name="Gradle: :STB:" />
       <element id="library" level="project" name="Gradle: :LWJGL:" />
       <element id="library" level="project" name="Gradle: :GLFW:" />
-      <element id="directory" name="META-INF">
-        <element id="dir-copy" path="$PROJECT_DIR$/Engine/src/META-INF" />
+      <element id="directory" name="res">
+        <element id="dir-copy" path="$PROJECT_DIR$/Game/res" />
       </element>
     </root>
   </artifact>

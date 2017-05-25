@@ -50,17 +50,19 @@ public class Main implements Application {
         renderer.camera(player.getCamera());
 
         ShaderProgram defaultShader = new ShaderProgram("default",
-                new Shader(Shader.Type.Vertex, ShaderProgram.BuiltIn.defaultV),
-                new Shader(Shader.Type.Fragment, ShaderProgram.BuiltIn.defaultF)
+                new Shader(Shader.Type.Vertex, Loader.getFileAsString(new Asset("shader/default.vsh"))),
+                new Shader(Shader.Type.Fragment,  Loader.getFileAsString(new Asset("shader/default.fsh")))
         );
         renderer.registerShader(defaultShader);
 
-        texture = Loader.loadTexture(new Asset("texture/man.jpg"));
+        texture = Loader.loadTexture(new Asset("texture/img.jpg"));
 
         Mesh mesh = MeshGen.pyramid(1, 1, 1).finish();
 
+        Material material = new Material(texture, new Vector3f(1f));
+
         display.getGlfwWindow().toggleCursor();
-        renderer.addSceneElement(wo = new WorldObject("cube", MeshGen.cubeTextured(1,1,1).finish(), "default") {
+        renderer.addSceneElement(wo = new WorldObject("cube", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
             @Override
             public void onCreate() {
                 getTransform().getPosition().set(2, -5F);
@@ -78,10 +80,32 @@ public class Main implements Application {
 
             @Override
             public void onRender() {
-                texture.bind();
             }
         });
-        renderer.addSceneElement(new WorldObject("sphere", MeshGen.sphere(32,32,1).finish(), "default") {
+        renderer.addSceneElement(wo = new WorldObject("cube_large", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
+            @Override
+            public void onCreate() {
+                getTransform().rotateX(-90F);
+                getTransform().setScale(new Vector3f(20F));
+                getTransform().getPosition().y = (-getTransform().getScale().y / 2F) - 15F;
+            }
+
+            @Override
+            public void onInput() {
+
+            }
+
+            @Override
+            public void onUpdate() {
+
+            }
+
+            @Override
+            public void onRender() {
+
+            }
+        });
+        renderer.addSceneElement(new WorldObject("sphere", MeshGen.sphere(32,32,1).finish(), material, "default") {
             @Override
             public void onCreate() {
                 getTransform().getPosition().set(3F, 0, -5F);
@@ -102,7 +126,7 @@ public class Main implements Application {
 
             }
         });
-        renderer.addSceneElement(new WorldObject("pyramid", mesh, "default") {
+        renderer.addSceneElement(new WorldObject("pyramid", mesh, material, "default") {
             @Override
             public void onCreate() {
                 getTransform().getPosition().set(-3F, 0, -5F);
@@ -124,30 +148,9 @@ public class Main implements Application {
             }
         });
 
-        Mesh ico = MeshGen.cube(0.5F, 0.5F, 0.5F).finish();
+        Mesh cube = MeshGen.cube(0.5F, 0.5F, 0.5F).finish();
         for(int i = 0; i < 500; i++) {
-//            WorldObject wo = new WorldObject("rand" + i, MeshGen.pyramid(1,1,1).finish(),"default") {
-//                @Override
-//                public void onCreate() {
-//
-//                }
-//
-//                @Override
-//                public void onInput() {
-//
-//                }
-//
-//                @Override
-//                public void onUpdate() {
-//
-//                }
-//
-//                @Override
-//                public void onRender() {
-//
-//                }
-//            };
-            WorldObject wo = new WorldObject("rand" + i, ico,"default") {
+            WorldObject wo = new WorldObject("rand" + i, mesh, material,"default") {
                 @Override
                 public void onCreate() {
 
@@ -178,17 +181,10 @@ public class Main implements Application {
             renderer.addSceneElement(wo);
         }
 
-        renderer.getScene().addLight("point", new PointLight(new Vector3f(0, 0.5f, 1f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
-        renderer.getScene().addLight("point2", new PointLight(new Vector3f(1f, 0.5f, 0f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
-        renderer.getScene().addLight("spot", new SpotLight(new Vector3f(1), player.getCamera().getPosition(), player.getCamera().getDirection(), 12.5F, 17.5F));
-
-        for(int i = 0; i < 5; i++) {
-            renderer.getScene().addLight("point" + i, new PointLight(
-                new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat()),
-                new Vector3f(random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F), random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F), random.nextFloat() * 15F * (random.nextBoolean()?-1F:1F)),
-                1.0F, 0.007F, 0.0002F)
-            );
-        }
+        renderer.getScene().addLight("dir", new DirectionalLight(new Vector3f(1F), new Vector3f(-2.0f, 4.0f, -1.0f)));
+//        renderer.getScene().addLight("point", new PointLight(new Vector3f(0, 0.5f, 1f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
+//        renderer.getScene().addLight("point2", new PointLight(new Vector3f(1f, 0.5f, 0f), new Vector3f(0, 25F, 0), 1.0F, 0.007F, 0.0002F));
+//        renderer.getScene().addLight("spot", new SpotLight(new Vector3f(1), player.getCamera().getPosition(), player.getCamera().getDirection(), 25F, 35F));
     }
 
     @Override
@@ -210,9 +206,9 @@ public class Main implements Application {
         x = (float) Math.cos(Math.toRadians(_t)) * r;
         y = (float) Math.sin(Math.toRadians(_t)) * r;
 
-        renderer.getScene().getSpotLights().get("spot").setPosition(player.getCamera().getPosition());
-        renderer.getScene().getSpotLights().get("spot").setDirection(player.getCamera().getDirection());
-        renderer.getScene().getPointLights().get("point2").setPosition(new Vector3f(x, 0, y));
+//        renderer.getScene().getSpotLights().get("spot").setPosition(player.getCamera().getPosition());
+//        renderer.getScene().getSpotLights().get("spot").setDirection(player.getCamera().getDirection());
+//        renderer.getScene().getPointLights().get("point2").setPosition(new Vector3f(x, -20f, y));
     }
 
     @Override
