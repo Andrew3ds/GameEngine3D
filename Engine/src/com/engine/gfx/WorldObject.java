@@ -3,11 +3,8 @@ package com.engine.gfx;
 import com.engine.misc.DialogWindow;
 import org.joml.Vector3f;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import static com.engine.core.Engine.gl;
 import static com.engine.core.Engine.renderer;
 
 /**
@@ -33,21 +30,20 @@ public abstract class WorldObject extends Node {
             return;
         }
 
-        Random random = new Random();
-
         if(renderer.getCamera() != null) {
             this.shaderProgram = this.shaderProgram.copyOf().compile();
             this.depthShader = renderer.getShader("depth").copyOf().compile();
 
             this.shaderProgram.matrix[ShaderProgram.PROJECTION].setData(renderer.getCamera().getProjection());
 
-            this.getShaderProgram().uniform("material.tex1", 0);
-            this.shaderProgram.uniform("material.color", material.getColor());
+            this.getShaderProgram().uniform("ambientColor", new Vector3f(1F));
+            this.getShaderProgram().uniform("material.color", material.getColor());
 
-            this.getShaderProgram().uniform("shadowMap", 1);
-            this.shaderProgram.uniform("ambientColor", new Vector3f(1F));
+            this.getShaderProgram().uniform("material.diffuseMap", 0);
+            this.getShaderProgram().uniform("material.normalMap", 1);
+            this.getShaderProgram().uniform("shadowMap", 2);
 
-            this.shaderProgram.addUniform(viewPosition = new Uniform<>("viewPosition", renderer.getCamera().getPosition()));
+            this.getShaderProgram().addUniform(viewPosition = new Uniform<>("viewPosition", renderer.getCamera().getPosition()));
         }
     }
 
@@ -115,15 +111,17 @@ public abstract class WorldObject extends Node {
             loadSpotLight(spotLight, i++);
         }
 
-        material.getTexture().slot(0).bind();
-        renderer.getShadowMap().slot(1).bind();
+        material.getDiffuse().slot(0).bind();
+        material.getNormalMap().slot(1).bind();
+        renderer.getShadowMap().slot(2).bind();
 
         getShaderProgram().bind();
         getMesh().render();
         getShaderProgram().unbind();
 
-        renderer.getShadowMap().slot(1).unbind();
-        material.getTexture().slot(0).unbind();
+        renderer.getShadowMap().slot(2).unbind();
+        material.getNormalMap().slot(1).unbind();
+        material.getDiffuse().slot(0).unbind();
     }
 
     private void renderDepth() {

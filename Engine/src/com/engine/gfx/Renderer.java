@@ -55,6 +55,7 @@ public class Renderer {
             "out vec4 color;\n" +
             "uniform sampler2D sampler;\n" +
             "void main() {\n" +
+//            "   color = vec4(vec3(texture(sampler, tCoord_out).r), 1.0);\n" +
             "   color = texture(sampler, tCoord_out);\n" +
             "}";
     private String depthVsh = "" +
@@ -80,8 +81,8 @@ public class Renderer {
         scene = new Scene();
         shaders = new HashMap<>();
         mode = Mode.Default;
-        lightProjection = new Matrix4f().ortho(-10F, 10F, -10F, 10F, 1.0F, 500F);
-        lightView = new Matrix4f().lookAt(new Vector3f(-2.0f, 4.0f, -1.0f), new Vector3f(0F, 0F, 0F), new Vector3f(0F, 1F, 0F));
+        lightProjection = new Matrix4f().ortho(-10F, 10F, -10F, 10F, 1F, 70.5F);
+        lightView = new Matrix4f().lookAt(new Vector3f(-2.0f, 6.0f, -1.0f), new Vector3f(0F, 0F, 0F), new Vector3f(0F, 1F, 0F));
         lightSpaceMatrix = new Matrix4f().set(lightProjection).mul(lightView);
 
         Vertex[] vertices = {
@@ -119,7 +120,7 @@ public class Renderer {
 
         getShader("texture").bind();
         renderSurface.getTexture().bind();
-//        depthSurface.getTexture().bind();
+//        depthSurface.getDiffuse().bind();
         quad.bind();
         gl.DrawElements(GL_TRIANGLES, quad.getSize(), GL_UNSIGNED_INT, 0L);
         quad.unbind();

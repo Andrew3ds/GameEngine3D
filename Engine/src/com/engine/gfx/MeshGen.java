@@ -2,6 +2,7 @@ package com.engine.gfx;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.par.ParShapes;
 import org.lwjgl.util.par.ParShapesMesh;
@@ -77,7 +78,7 @@ public class MeshGen {
     public static Mesh pyramid(float width, float height, float depth) {
         float x = width / 2F;
         float y = height / 2F;
-        float z = height / 2F;
+        float z = depth / 2F;
 
         Vertex[] vertices = {
                 new Vertex(new Vector3f( x, -y,  z), new Vector2f(0, 0)), //0
@@ -171,9 +172,9 @@ public class MeshGen {
         }
 
         ParShapes.par_shapes_free_mesh(mesh);
-        MemoryUtil.memFree(points);
-        MemoryUtil.memFree(normals);
-        MemoryUtil.memFree(triangles);
+//        MemoryUtil.memFree(points);
+//        MemoryUtil.memFree(normals);
+//        MemoryUtil.memFree(triangles);
 
         return new Mesh(name).setVertices(vertices, indices).generateNormals();
     }

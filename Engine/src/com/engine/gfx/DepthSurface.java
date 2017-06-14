@@ -32,7 +32,7 @@ public class DepthSurface implements IRenderTarget, Disposable {
 
         depthComponent = new Framebuffer(width, height);
         texture = new Texture(width, height, Texture.Target.DepthTexture, null,
-                new TextureParameter(TextureParameter.Filter.Nearest, TextureParameter.Edge.Clamp, 16));
+                new TextureParameter(TextureParameter.Filter.Nearest, TextureParameter.Edge.Clamp, 2));
         depthComponent.texture2D(texture, Framebuffer.Attachment.Depth);
         depthComponent.bind();
         glDrawBuffer(GL_NONE);

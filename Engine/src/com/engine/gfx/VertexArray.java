@@ -25,7 +25,9 @@ public class VertexArray implements GLObject {
         vbos = new VertexBuffer[] {
                 new VertexBuffer().bufferData(buffers[0]).attribPointer(0, 3),
                 new VertexBuffer().bufferData(buffers[1]).attribPointer(1, 2),
-                new VertexBuffer().bufferData(buffers[2]).attribPointer(2, 3)
+                new VertexBuffer().bufferData(buffers[2]).attribPointer(2, 3),
+                new VertexBuffer().bufferData(buffers[3]).attribPointer(3, 3),
+                new VertexBuffer().bufferData(buffers[4]).attribPointer(4, 3)
         };
         unbind();
 

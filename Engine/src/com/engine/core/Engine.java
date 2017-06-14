@@ -4,12 +4,14 @@ import com.engine.gfx.*;
 import com.engine.input.IInput;
 import com.engine.input.Input;
 import com.engine.misc.DialogWindow;
+import org.lwjgl.system.MemoryStack;
 
 /**
  * Created by Andrew on 12/27/2016.
  */
 public class Engine {
     private static Thread mainThread;
+    public static MemoryStack memoryStack;
     public static Application app;
     public static IGL gl;
     public static Display display;
@@ -70,9 +72,13 @@ public class Engine {
         renderer.enableCulling(true);
         renderer.enableDepthClamp(true);
         renderer.enableBlending(true);
+        gl.Enable(IGL.GL_TEXTURE_2D);
+        Texture.initialize();
     }
 
     private static void run() {
+        memoryStack = MemoryStack.stackGet();
+
         initGL();
         app.Start();
         GameLoop();

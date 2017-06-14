@@ -50,7 +50,7 @@ public class TextureParameter {
         gl.TexParameterf(target.handle, GL_TEXTURE_WRAP_T, edge.handle);
         gl.TexParameterfv(target.handle, GL_TEXTURE_BORDER_COLOR, new float[]{ 1.0F, 1.0F, 1.0F, 1.0F });
 
-        if(gl.supportsAniso()) {
+        if(gl.supportsAniso() && anisoFilteringLevel > 0) {
             float maxAniso = gl.GetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
             gl.TexParameterf(target.handle, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisoFilteringLevel, maxAniso));
         }

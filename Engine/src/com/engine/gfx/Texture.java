@@ -22,6 +22,7 @@ public class Texture implements GLObject {
     }
 
     public static List<Texture> textures = new ArrayList<>();
+    public static Texture NULL;
     private int handle = -1;
     private int width;
     private int height;
@@ -39,7 +40,7 @@ public class Texture implements GLObject {
                 gl.TexImage2D(target.handle, 0, GL_SRGB_ALPHA, this.width = width, this.height = height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.pixels = pixels);
             } break;
             case DepthTexture: {
-                gl.TexImage2D(target.handle, 0, GL_DEPTH_COMPONENT, this.width = width, this.height = height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, this.pixels = pixels);
+                gl.TexImage2D(target.handle, 0, GL_DEPTH_COMPONENT32F, this.width = width, this.height = height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, this.pixels = pixels);
             } break;
         }
         gl.GenerateMipmap(target.handle);
@@ -69,6 +70,10 @@ public class Texture implements GLObject {
 
     public static void clearTextures() {
         textures.forEach(Texture::dispose);
+    }
+
+    public static void initialize() {
+        NULL = new Texture(0, 0, Texture.Target.Texture2D, null, TextureParameter.defaultInstance);
     }
 
     @Override
