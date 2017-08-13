@@ -4,6 +4,7 @@ import com.engine.gfx.*;
 import com.engine.input.IInput;
 import com.engine.input.Input;
 import com.engine.misc.DialogWindow;
+import org.lwjgl.GLWindow;
 import org.lwjgl.system.MemoryStack;
 
 /**
@@ -82,5 +83,6 @@ public class Engine {
         initGL();
         app.Start();
         GameLoop();
+        GLWindow.Terminate();
     }
 }

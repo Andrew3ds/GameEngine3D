@@ -4,7 +4,6 @@ layout(location = 0) out vec4 fragColor;
 
 in VS_OUT {
 	vec3 normal;
-	mat3 TBN;
 	vec2 tCoord;
 	float viewDist;
 	vec3 viewPosition;
@@ -24,6 +23,7 @@ uniform vec3 ambientColor;
 uniform int numPointLights;
 uniform int numDirLights;
 uniform int numSpotLights;
+uniform bool useFog;
 
 vec4 textureColor;
 
@@ -57,6 +57,8 @@ struct SpotLight {
 
 #define NR_SPOT_LIGHTS 4
 uniform SpotLight spotLights[NR_SPOT_LIGHTS];
+
+vec3 fogColor = vec3(0.5, 0.5, 0.52);
 
 vec3 calcDiffuse(vec3 normal, vec3 lightDir, vec3 lightColor) {
 	float diffuseIntensity = max(dot(normal, lightDir), 0.0);
@@ -150,13 +152,7 @@ void main() {
 	float ambientStrength = 0.25f;
 	vec3 ambient = ambientStrength * ambientColor * material.color;
 
-    vec3 normal;
-    vec3 normalMapTexel = texture(material.normalMap, fs_in.tCoord).rgb;
-    if(normalMapTexel == vec3(0)) {
-    	normal = normalize(fs_in.normal);
-    } else {
-        normal = normalize(fs_in.TBN * normalize((normalMapTexel * 2.0) - 1.0));
-    }
+    vec3 normal = normalize(fs_in.normal);
 
 	vec3 totalLighting = vec3(0);
 
@@ -174,8 +170,10 @@ void main() {
 	shadow = min(shadow, 0.75);
 	vec3 lightResult = (ambient + ((1.0 - shadow) * totalLighting));
 
-    float fog = calcFog(fs_in.viewDist, 15.0f, 1.0);
-    vec3 fogColor = vec3(0.5, 0.5, 0.52);
+    float fog = 1;
+    if(useFog) {
+        fog = calcFog(fs_in.viewDist, 15.0f, 1.0);
+    }
 
 	fragColor = vec4(mix(fogColor, textureColor.rgb * lightResult, fog), textureColor.a);
 	//fragColor = vec4((normal + 1.0) * 0.5, 1.0);

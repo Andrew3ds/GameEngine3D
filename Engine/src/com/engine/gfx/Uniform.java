@@ -17,7 +17,7 @@ public class Uniform<T> {
         INT(Integer.class.getName()), FLOAT(Float.class.getName()),
         VEC2(Vector2f.class.getName()), VEC3(Vector3f.class.getName()),
         VEC4(Vector4f.class.getName()), MAT3((Matrix3f.class.getName())),
-        MAT4(Matrix4f.class.getName());
+        MAT4(Matrix4f.class.getName()), BOOL(Boolean.class.getName());
 
         final String className;
 
@@ -123,6 +123,9 @@ public class Uniform<T> {
                 buffer.clear();
                 matrix.get(buffer);
                 gl.UniformMatrix4fv(location, false, buffer);
+            } break;
+            case BOOL: {
+                gl.Uniform1i(location, ((Boolean)data)?1:0);
             } break;
         }
 

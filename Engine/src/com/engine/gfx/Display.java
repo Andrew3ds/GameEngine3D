@@ -25,6 +25,7 @@ public class Display {
     public Display create() {
         glfwWindow = new GLWindow(new Integer[]{1280, 720}, "Dungeon");
         glfwWindow.createContext();
+        glfwWindow.setVSync(true);
         glfwWindow.show();
 
         glfwWindow.setResizeCallback(new GLFWWindowSizeCallback() {

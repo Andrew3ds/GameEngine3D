@@ -1,6 +1,8 @@
 package com.engine.gfx;
 
+import com.engine.anim.AnimatedModel;
 import com.engine.misc.DialogWindow;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.Map;
@@ -11,17 +13,16 @@ import static com.engine.core.Engine.renderer;
  * Created by Andrew on 1/8/2017.
  */
 public abstract class WorldObject extends Node {
-    private Mesh mesh;
-    private Material material;
+    private AnimatedModel model;
     private ShaderProgram shaderProgram;
     private ShaderProgram depthShader;
     private Uniform<Vector3f> viewPosition;
+    private Matrix4f matrix;
 
-    public WorldObject(String name, Mesh mesh, Material material, String shaderName) {
+    public WorldObject(String name, AnimatedModel model, String shaderName) {
         super(name);
 
-        this.mesh = mesh;
-        this.material = material;
+        this.model = model;
         this.shaderProgram = renderer.getShader(shaderName);
         if(this.shaderProgram == null) {
             DialogWindow.errorDialog(new IllegalArgumentException("Non-existent shader given for \"".concat(name).concat("\"")));
@@ -30,29 +31,31 @@ public abstract class WorldObject extends Node {
             return;
         }
 
+        matrix = new Matrix4f();
         if(renderer.getCamera() != null) {
             this.shaderProgram = this.shaderProgram.copyOf().compile();
             this.depthShader = renderer.getShader("depth").copyOf().compile();
 
             this.shaderProgram.matrix[ShaderProgram.PROJECTION].setData(renderer.getCamera().getProjection());
 
+            this.getShaderProgram().uniform("skinned", false);
             this.getShaderProgram().uniform("ambientColor", new Vector3f(1F));
-            this.getShaderProgram().uniform("material.color", material.getColor());
+            this.getShaderProgram().uniform("material.color", model.getMaterial().getColor());
 
             this.getShaderProgram().uniform("material.diffuseMap", 0);
             this.getShaderProgram().uniform("material.normalMap", 1);
             this.getShaderProgram().uniform("shadowMap", 2);
+            this.getShaderProgram().uniform("useFog", true);
+            for(int i = 0; i < model.getJointCount(); i++) {
+                this.getShaderProgram().uniform("jointTransforms[" + i + "]", matrix);
+            }
 
             this.getShaderProgram().addUniform(viewPosition = new Uniform<>("viewPosition", renderer.getCamera().getPosition()));
         }
     }
 
-    public Mesh getMesh() {
-        return mesh;
-    }
-
-    public Material getMaterial() {
-        return material;
+    public AnimatedModel getModel() {
+        return model;
     }
 
     public ShaderProgram getShaderProgram() {
@@ -111,17 +114,17 @@ public abstract class WorldObject extends Node {
             loadSpotLight(spotLight, i++);
         }
 
-        material.getDiffuse().slot(0).bind();
-        material.getNormalMap().slot(1).bind();
+        model.getMaterial().getDiffuse().slot(0).bind();
+        model.getMaterial().getNormalMap().slot(1).bind();
         renderer.getShadowMap().slot(2).bind();
 
         getShaderProgram().bind();
-        getMesh().render();
+        getModel().getMesh().render();
         getShaderProgram().unbind();
 
         renderer.getShadowMap().slot(2).unbind();
-        material.getNormalMap().slot(1).unbind();
-        material.getDiffuse().slot(0).unbind();
+        model.getMaterial().getNormalMap().slot(1).unbind();
+        model.getMaterial().getDiffuse().slot(0).unbind();
     }
 
     private void renderDepth() {
@@ -130,7 +133,7 @@ public abstract class WorldObject extends Node {
 
         renderer.cullFace(Renderer.Face.Front);
         depthShader.bind();
-        getMesh().render();
+        getModel().getMesh().render();
         depthShader.unbind();
         renderer.cullFace(Renderer.Face.Back);
     }

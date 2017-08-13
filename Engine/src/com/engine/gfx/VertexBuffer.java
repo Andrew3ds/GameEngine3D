@@ -68,9 +68,17 @@ public class VertexBuffer implements GLObject {
         return this;
     }
 
-    public VertexBuffer attribPointer(int position, int size) {
+    public VertexBuffer attribPointerFloat(int position, int size) {
         bind();
         gl.VertexAttribPointer(position, size, GL_FLOAT, false, 0, 0L);
+        unbind();
+
+        return this;
+    }
+
+    public VertexBuffer attribPointerInt(int position, int size) {
+        bind();
+        gl.VertexAttribPointer(position, size, GL_INT, false, 0, 0L);
         unbind();
 
         return this;

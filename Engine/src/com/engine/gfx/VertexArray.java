@@ -8,6 +8,12 @@ import static com.engine.core.Engine.gl;
  * Created by Andrew on 12/30/2016.
  */
 public class VertexArray implements GLObject {
+    private final int POSITION = 0;
+    private final int TEXCOORD = 1;
+    private final int NORMAL = 2;
+    private final int JOINT_ID = 3;
+    private final int WEIGHT = 4;
+
     private int handle = -1;
     private VertexBuffer ibo;
     private VertexBuffer[] vbos;
@@ -23,11 +29,11 @@ public class VertexArray implements GLObject {
 
         bind();
         vbos = new VertexBuffer[] {
-                new VertexBuffer().bufferData(buffers[0]).attribPointer(0, 3),
-                new VertexBuffer().bufferData(buffers[1]).attribPointer(1, 2),
-                new VertexBuffer().bufferData(buffers[2]).attribPointer(2, 3),
-                new VertexBuffer().bufferData(buffers[3]).attribPointer(3, 3),
-                new VertexBuffer().bufferData(buffers[4]).attribPointer(4, 3)
+                new VertexBuffer().bufferData(buffers[POSITION]).attribPointerFloat(0, 3),
+                new VertexBuffer().bufferData(buffers[TEXCOORD]).attribPointerFloat(1, 2),
+                new VertexBuffer().bufferData(buffers[NORMAL]  ).attribPointerFloat(2, 3),
+                new VertexBuffer().bufferData(buffers[JOINT_ID]).attribPointerInt  (3, 3),
+                new VertexBuffer().bufferData(buffers[WEIGHT]  ).attribPointerFloat(4, 3),
         };
         unbind();
 

@@ -111,48 +111,13 @@ public class Mesh implements Disposable {
             v2 = C.sub(A);
 
             Vector3f normal = v1.cross(v2).normalize();
+            if(normal.x == 0 || normal.y == 0 || normal.z == 0) {
+                System.out.println("empty normal");
+            }
 
             vertices[i0].getNormal().set(vertices[i0].getNormal().add(normal));
             vertices[i1].getNormal().set(vertices[i1].getNormal().add(normal));
             vertices[i2].getNormal().set(vertices[i2].getNormal().add(normal));
-
-//            Tangent generation
-            A.set(vertices[i0].getPosition());
-            B.set(vertices[i1].getPosition());
-            C.set(vertices[i2].getPosition());
-
-            UVA.set(vertices[i0].getTexCoord());
-            UVB.set(vertices[i1].getTexCoord());
-            UVC.set(vertices[i2].getTexCoord());
-
-            v1 = B.sub(A);
-            v2 = C.sub(A);
-
-            deltaUV1 = UVB.sub(UVA);
-            deltaUV2 = UVC.sub(UVA);
-
-            float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-
-            Vector3f tangent = new Vector3f();
-            Vector3f biTangent = new Vector3f();
-
-            tangent.x = f * (deltaUV2.y * v1.x - deltaUV1.y * v2.x);
-            tangent.y = f * (deltaUV2.y * v1.y - deltaUV1.y * v2.y);
-            tangent.z = f * (deltaUV2.y * v1.z - deltaUV1.y * v2.z);
-            tangent.normalize();
-
-            vertices[i0].getTangent().add(tangent);
-            vertices[i1].getTangent().add(tangent);
-            vertices[i2].getTangent().add(tangent);
-
-            biTangent.x = f * (deltaUV2.x * v1.x + deltaUV1.x * v2.x);
-            biTangent.y = f * (deltaUV2.x * v1.y + deltaUV1.x * v2.y);
-            biTangent.z = f * (deltaUV2.x * v1.z + deltaUV1.x * v2.z);
-            biTangent.normalize();
-
-            vertices[i0].getBiTangent().add(biTangent);
-            vertices[i1].getBiTangent().add(biTangent);
-            vertices[i2].getBiTangent().add(biTangent);
         }
 
         return this;

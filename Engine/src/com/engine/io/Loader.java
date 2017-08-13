@@ -1,8 +1,9 @@
 package com.engine.io;
 
-import com.engine.gfx.Texture;
-import com.engine.gfx.TextureParameter;
+import com.engine.gfx.*;
 import com.engine.misc.DialogWindow;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
@@ -10,6 +11,8 @@ import org.lwjgl.system.MemoryUtil;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew on 1/6/2017.
@@ -71,5 +74,69 @@ public class Loader {
         MemoryUtil.memFree(buffer);
 
         return new Texture(w.get(), h.get(), Texture.Target.Texture2D, pixels, TextureParameter.defaultInstance);
+    }
+
+    public static Mesh loadMesh(Asset location) {
+        Mesh m = new Mesh(location.asFile().getName());
+        List<Vector3f> positions = new ArrayList<>();
+        List<Vector2f> tCoords = new ArrayList<>();
+        List<Vector3f> normals = new ArrayList<>();
+        List<Integer> indexList = new ArrayList<>();
+
+        try {
+            DataInputStream dis = new DataInputStream(new FileInputStream(location.asFile()));
+
+            int size = dis.readInt();
+            for(int i = 0; i < size; i+=3) {
+                Vector3f vertex = new Vector3f();
+                vertex.x = dis.readFloat();
+                vertex.y = dis.readFloat();
+                vertex.z = dis.readFloat();
+
+                positions.add(vertex);
+            }
+            size = dis.readInt();
+            for(int i = 0; i < size; i+=2) {
+                Vector2f tCoord = new Vector2f();
+                tCoord.x = dis.readFloat();
+                tCoord.y = dis.readFloat();
+
+                tCoords.add(tCoord);
+            }
+            size = dis.readInt();
+            for(int i = 0; i < size; i+=3) {
+                Vector3f normal = new Vector3f();
+                normal.x = dis.readFloat();
+                normal.y = dis.readFloat();
+                normal.z = dis.readFloat();
+
+                normals.add(normal);
+            }
+            size = dis.readInt();
+            for(int i = 0; i < size; i++) {
+                indexList.add(dis.readInt());
+            }
+
+            dis.close();
+        } catch (IOException e) {
+            DialogWindow.errorDialog(e);
+
+            return null;
+        }
+
+        Vertex[] vertices = new Vertex[positions.size()];
+        for(int i = 0; i < positions.size(); i++) {
+            vertices[i] = new Vertex(
+                    positions.get(i),
+                    tCoords.get(i),
+                    normals.get(i)
+            );
+        }
+        Integer[] indices = new Integer[indexList.size()];
+        indexList.toArray(indices);
+
+        m.setVertices(vertices, indices).generateNormals().finish();
+
+        return m;
     }
 }

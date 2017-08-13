@@ -1,11 +1,12 @@
 package com.engine.gfx;
 
+import com.engine.core.Disposable;
 import org.joml.Vector3f;
 
 /**
  * Created by Andrew on 5/24/2017.
  */
-public class Material {
+public class Material implements Disposable {
     private Texture diffuse;
     private Texture normalMap;
     private Vector3f color;
@@ -26,5 +27,12 @@ public class Material {
 
     public Vector3f getColor() {
         return color;
+    }
+
+    @Override
+    public void dispose() {
+        diffuse.dispose();
+        normalMap.dispose();
+        color = null;
     }
 }

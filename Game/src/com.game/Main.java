@@ -1,5 +1,6 @@
 package com.game;
 
+import com.engine.anim.AnimatedModel;
 import com.engine.core.Application;
 import com.engine.core.Engine;
 import com.engine.core.Timer;
@@ -57,80 +58,18 @@ public class Main implements Application {
         Texture texture = Loader.loadTexture(new Asset("texture/brickwall.jpg"));
         Texture normalMap = Loader.loadTexture(new Asset("texture/brickwall_normal.jpg"));
 
-        Mesh mesh = MeshGen.pyramid(1, 1, 1).finish();
+//        Mesh mesh = MeshGen.pyramid(1, 1, 1).finish();
+        Mesh mesh = Loader.loadMesh(new Asset("model/midna.bin"));
 
         Material material = new Material(texture, normalMap, new Vector3f(1f));
+        AnimatedModel model = new AnimatedModel(mesh, material, null, 0);
 
         display.getGlfwWindow().toggleCursor();
-        renderer.addSceneElement(wo = new WorldObject("cube", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
-            @Override
-            public void onCreate() {
-                getTransform().getPosition().set(0, 0, -5F);
-            }
-
-            @Override
-            public void onInput() {
-
-            }
-
-            @Override
-            public void onUpdate() {
-                getTransform().rotateY(1f);
-            }
-
-            @Override
-            public void onRender() {
-
-            }
-        });
-        renderer.addSceneElement(wo = new WorldObject("cube_large", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
-            @Override
-            public void onCreate() {
-                getTransform().rotateX(-90F);
-                getTransform().setScale(new Vector3f(20F));
-                getTransform().getPosition().y = (-getTransform().getScale().y / 2F) - 3f;
-            }
-
-            @Override
-            public void onInput() {
-
-            }
-
-            @Override
-            public void onUpdate() {
-
-            }
-
-            @Override
-            public void onRender() {
-
-            }
-        });
-        renderer.addSceneElement(new WorldObject("sphere", MeshGen.sphere(32,32,1).finish(), material, "default") {
-            @Override
-            public void onCreate() {
-                getTransform().getPosition().set(3F, 0, -5F);
-            }
-
-            @Override
-            public void onInput() {
-
-            }
-
-            @Override
-            public void onUpdate() {
-
-            }
-
-            @Override
-            public void onRender() {
-
-            }
-        });
-        renderer.addSceneElement(new WorldObject("pyramid", mesh, material, "default") {
+        renderer.addSceneElement(new WorldObject("pyramid", model, "default") {
             @Override
             public void onCreate() {
                 getTransform().getPosition().set(-3F, 0, -5F);
+                getTransform().getScale().set(0.01f);
             }
 
             @Override
@@ -148,6 +87,71 @@ public class Main implements Application {
 
             }
         });
+//        renderer.addSceneElement(wo = new WorldObject("cube", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
+//            @Override
+//            public void onCreate() {
+//                getTransform().getPosition().set(0, 0, -5F);
+//            }
+//
+//            @Override
+//            public void onInput() {
+//
+//            }
+//
+//            @Override
+//            public void onUpdate() {
+//                getTransform().rotateY(1f);
+//            }
+//
+//            @Override
+//            public void onRender() {
+//
+//            }
+//        });
+//        renderer.addSceneElement(wo = new WorldObject("cube_large", MeshGen.cubeTextured(1,1,1).finish(), material, "default") {
+//            @Override
+//            public void onCreate() {
+//                getTransform().rotateX(-90F);
+//                getTransform().setScale(new Vector3f(20F));
+//                getTransform().getPosition().y = (-getTransform().getScale().y / 2F) - 3f;
+//            }
+//
+//            @Override
+//            public void onInput() {
+//
+//            }
+//
+//            @Override
+//            public void onUpdate() {
+//
+//            }
+//
+//            @Override
+//            public void onRender() {
+//
+//            }
+//        });
+//        renderer.addSceneElement(new WorldObject("sphere", MeshGen.sphere(32,32,1).finish(), material, "default") {
+//            @Override
+//            public void onCreate() {
+//                getTransform().getPosition().set(3F, 0, -5F);
+//            }
+//
+//            @Override
+//            public void onInput() {
+//
+//            }
+//
+//            @Override
+//            public void onUpdate() {
+//
+//            }
+//
+//            @Override
+//            public void onRender() {
+//
+//            }
+//        });
 
 //        Mesh cube = MeshGen.cube(0.5f, 0.5f, 0.5f).finish();
 //        for(int i = 0; i < 500; i++) {
