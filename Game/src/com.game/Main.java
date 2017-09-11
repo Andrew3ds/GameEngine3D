@@ -29,6 +29,8 @@ public class Main implements Application {
 
     @Override
     public void Start() {
+        System.out.println(Engine.gl.GetString(IGL.GL_RENDERER));
+
         player = new Player();
 
         gl.ClearColor(0.5F, 0.5F, 0.52F, 1F);
